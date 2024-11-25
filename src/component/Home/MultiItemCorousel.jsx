@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
 import { topMeels } from './topMeel';
 import CorouselItem from './CorouselItem';
-import './Home.css'; // CSS faylingizni import qilish
+import './Home.css';
 
 const MultiItemCorousel = () => {
   const settings = {
@@ -16,6 +16,20 @@ const MultiItemCorousel = () => {
     autoplay: true,
     autoplaySpeed: 2000,
     arrows: false,
+    responsive: [
+      {
+        breakpoint: 1024, // Tablet
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 768, // Mobile
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -23,7 +37,7 @@ const MultiItemCorousel = () => {
       <Slider {...settings}>
         {topMeels.map((item) => (
           <CorouselItem 
-            key={item.title}  // `index`ni `item.title` bilan almashtirish
+            key={item.id}  // Prefer using item.id for a unique key
             image={item.image} 
             title={item.title} 
           />

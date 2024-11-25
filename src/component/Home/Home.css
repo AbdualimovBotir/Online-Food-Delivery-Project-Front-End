@@ -1,4 +1,4 @@
-/* Banner section styling */
+/* Banner Section */
 .banner {
   background-image: url("https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=600");
   background-size: cover; /* Ensures the image covers the entire section */
@@ -31,22 +31,36 @@
   padding: 2.5rem;
 }
 
-/* For the Top Meals section */
 section {
   padding: 2.5rem 1.25rem;
 }
 
 /* Adding responsive behavior for different screen sizes */
 @media (max-width: 768px) {
-.banner {
-  height: 60vh;
+  .banner {
+    height: 60vh; /* Shorter height for smaller screens */
+  }
+  .grid {
+    grid-template-columns: 1fr; /* Single column layout */
+  }
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .banner {
+    height: 70vh; /* Moderate height for medium screens */
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+  }
 }
 
 @media (min-width: 1024px) {
-.banner {
-  height: 90vh;
-}
+  .banner {
+    height: 90vh; /* Full height for large screens */
+  }
+  .grid {
+    grid-template-columns: repeat(4, 1fr); /* Four columns for larger screens */
+  }
 }
 
 .grid {
