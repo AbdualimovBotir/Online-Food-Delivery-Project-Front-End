@@ -16,12 +16,8 @@ export const Home = () => {
             Test the Convenience: Food, Fast and Delivered.
           </p>
         </div>
-        <div className="cover absolute top-0 left-0 right-0">
-          {/* Background cover (make sure it's styled in CSS) */}
-        </div>
-        <div className="fadout">
-          {/* Fading effect (ensure it's styled in CSS) */}
-        </div>
+        <div className="cover absolute top-0 left-0 right-0"></div>
+        <div className="fadout"></div>
       </section>
 
       {/* Top Meals Section */}
@@ -33,13 +29,13 @@ export const Home = () => {
       </section>
 
       {/* Restaurant Cards Section */}
-      <section className="p-10 lg:py-10 lg:px-20">
+      <section className="p-10 lg:py-5 lg:px-20 pt-5">
         <h1 className="text-2xl font-semibold text-gray-400 py-3">
           Order from our handpicked favourites
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {restaurants.map((item, index) => (
-            <RestaurantCart key={index} />
+          {restaurants.map((item) => (
+            <RestaurantCart key={item.id} name={item.name} image={item.image} description={item.description} />
           ))}
         </div>
       </section>

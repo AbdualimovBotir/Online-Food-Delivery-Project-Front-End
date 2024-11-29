@@ -15,3 +15,4 @@ const CorouselItem = ({ image, title }) => {
 }
 
 export default CorouselItem;
+
