@@ -3,7 +3,56 @@ import "./Home.css";
 import MultiItemCorousel from './MultiItemCorousel';
 import RestaurantCart from '../Restaurant/RestaurantCart';
 
-const restaurants = [1, 1, 1, 1, 1, 1, 1, 1];
+const restaurants = [
+  {
+    id: 1,
+    name: "Pizza Place",
+    image: "https://example.com/pizza.jpg",
+    description: "Delicious pizzas made with fresh ingredients."
+  },
+  {
+    id: 2,
+    name: "Burger World",
+    image: "https://example.com/burger.jpg",
+    description: "Juicy burgers with a variety of toppings."
+  },
+  {
+    id: 3,
+    name: "Sushi Spot",
+    image: "https://example.com/sushi.jpg",
+    description: "Authentic sushi with fresh fish."
+  },
+  {
+    id: 4,
+    name: "Taco Town",
+    image: "https://example.com/taco.jpg",
+    description: "Tacos filled with a variety of fresh ingredients."
+  },
+  {
+    id: 5,
+    name: "Pasta Palace",
+    image: "https://example.com/pasta.jpg",
+    description: "Fresh pasta dishes with a choice of sauces."
+  },
+  {
+    id: 6,
+    name: "Salad Bar",
+    image: "https://example.com/salad.jpg",
+    description: "Healthy salads made with organic ingredients."
+  },
+  {
+    id: 7,
+    name: "BBQ Grill",
+    image: "https://example.com/bbq.jpg",
+    description: "Smoky BBQ with a variety of meats."
+  },
+  {
+    id: 8,
+    name: "Dessert Haven",
+    image: "https://example.com/dessert.jpg",
+    description: "Delicious desserts to satisfy your sweet tooth."
+  }
+];
 
 export const Home = () => {
   return (
@@ -22,7 +71,7 @@ export const Home = () => {
 
       {/* Top Meals Section */}
       <section className="p-10 lg:py-10 lg:px-20">
-        <p className="text-2xl font-semibold text-gray-400 py-3 pb-10 font-bold my-8">
+        <p className="text-2xl text-gray-400 py-3 pb-10 font-bold my-8">
           Top Meals
         </p>
         <MultiItemCorousel />
@@ -35,12 +84,17 @@ export const Home = () => {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {restaurants.map((item) => (
-            <RestaurantCart key={item.id} name={item.name} image={item.image} description={item.description} />
+            <RestaurantCart
+              key={item.id}  // Unique key for each item
+              name={item.name}
+              image={item.image}
+              description={item.description}
+            />
           ))}
         </div>
       </section>
-      
     </div>
   );
 };
+
 export default Home;

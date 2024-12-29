@@ -35,9 +35,9 @@ const MultiItemCorousel = () => {
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        {topMeels.map((item) => (
+        {topMeels.map((item, index) => (
           <CorouselItem 
-            key={item.id}  // Prefer using item.id for a unique key
+            key={index} 
             image={item.image} 
             title={item.title} 
           />

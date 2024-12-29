@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import {
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
@@ -27,7 +26,6 @@ export const registerUser = (reqData) => async (dispatch) => {
       localStorage.setItem('jwt', data.jwt);
     }
 
-    // Redirect based on user role
     if (data.role === 'ROLE_RESTAURANT_OWNER') {
       reqData.navigate('/admin/restaurant');
     } else {
@@ -59,7 +57,6 @@ export const loginUser = (reqData) => async (dispatch) => {
     dispatch({ type: LOGIN_SUCCESS, payload: data.jwt });
     console.log("Login success", data);
 
-    // Redirect based on user role
     if (data.role === 'ROLE_RESTAURANT_OWNER') {
       reqData.navigate('/admin/restaurant');
     } else {
@@ -79,14 +76,11 @@ export const getUser = (jwt) => async (dispatch) => {
   dispatch({ type: GET_USER_REQUEST });
 
   try {
-    const { data } = await axios.get(
-      `${API_URL}/user/profile`, // Endpoint to fetch user data
-      {
-        headers: {
-          Authorization: `Bearer ${jwt}` // Sending JWT token in the Authorization header
-        }
+    const { data } = await axios.get(`${API_URL}/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
       }
-    );
+    });
 
     dispatch({ type: GET_USER_SUCCESS, payload: data });
     console.log("User profile fetched", data);
@@ -99,17 +93,17 @@ export const getUser = (jwt) => async (dispatch) => {
   }
 };
 
-// Add to Favorite Action (with jwt and restaurantId)
+// Add to Favorite Action
 export const addToFavorite = (jwt, restaurantId) => async (dispatch) => {
   dispatch({ type: ADD_TO_FAVORITE_REQUEST });
 
   try {
     const { data } = await axios.post(
-      `${API_URL}/user/favorites`, // API endpoint to add to favorites
-      { restaurantId }, // Sending restaurantId in the request body
+      `${API_URL}/user/favorites`,
+      { restaurantId },
       {
         headers: {
-          Authorization: `Bearer ${jwt}` // Sending JWT token in the Authorization header
+          Authorization: `Bearer ${jwt}`
         }
       }
     );
@@ -128,11 +122,7 @@ export const addToFavorite = (jwt, restaurantId) => async (dispatch) => {
 // Logout Action
 export const logout = () => async (dispatch) => {
   try {
-    // Clear JWT token from localStorage
     localStorage.clear();
-    // localStorage.removeItem('jwt');
-    
-    // Dispatch LOGOUT action
     dispatch({ type: LOGOUT });
     console.log("Logout success");
   } catch (error) {
