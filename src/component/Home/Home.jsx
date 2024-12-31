@@ -1,60 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./Home.css";
 import MultiItemCorousel from './MultiItemCorousel';
 import RestaurantCart from '../Restaurant/RestaurantCart';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllRestaurants } from '../State/Restaurant/Action';
 
 const restaurants = [
   {
     id: 1,
     name: "Pizza Place",
-    image: "https://example.com/pizza.jpg",
+    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
     description: "Delicious pizzas made with fresh ingredients."
   },
   {
     id: 2,
     name: "Burger World",
-    image: "https://example.com/burger.jpg",
+    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
     description: "Juicy burgers with a variety of toppings."
   },
   {
     id: 3,
     name: "Sushi Spot",
-    image: "https://example.com/sushi.jpg",
+    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
     description: "Authentic sushi with fresh fish."
   },
-  {
-    id: 4,
-    name: "Taco Town",
-    image: "https://example.com/taco.jpg",
-    description: "Tacos filled with a variety of fresh ingredients."
-  },
-  {
-    id: 5,
-    name: "Pasta Palace",
-    image: "https://example.com/pasta.jpg",
-    description: "Fresh pasta dishes with a choice of sauces."
-  },
-  {
-    id: 6,
-    name: "Salad Bar",
-    image: "https://example.com/salad.jpg",
-    description: "Healthy salads made with organic ingredients."
-  },
-  {
-    id: 7,
-    name: "BBQ Grill",
-    image: "https://example.com/bbq.jpg",
-    description: "Smoky BBQ with a variety of meats."
-  },
-  {
-    id: 8,
-    name: "Dessert Haven",
-    image: "https://example.com/dessert.jpg",
-    description: "Delicious desserts to satisfy your sweet tooth."
-  }
 ];
 
 export const Home = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  // const { restaurant } = useSelector(store => store);
+  // const { restaurants, loading, error } = useSelector((state) => state.restaurant);
+  const restaurants = useSelector((state) => state.restaurant.restaurants);
+
+  console.log("restaurant", restaurants);
+
+  useEffect(() => {
+    dispatch(getAllRestaurants(jwt));
+  }, [dispatch, jwt]);
+
   return (
     <div>
       {/* Banner Section */}
@@ -85,10 +69,8 @@ export const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {restaurants.map((item) => (
             <RestaurantCart
-              key={item.id}  // Unique key for each item
-              name={item.name}
-              image={item.image}
-              description={item.description}
+              item={item}
+              key={item.id}
             />
           ))}
         </div>

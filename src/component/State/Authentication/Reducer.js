@@ -63,14 +63,15 @@ const authReducer = (state = initialState, action) => {
       };
 
     case LOGOUT:
-      return {
-        ...state,
-        jwt: null,
-        user: null,
-        favorites: [],
-        success: 'Logout successful',
-        error: null
-      };
+      return initialState;
+      // return {
+      //   ...state,
+      //   jwt: null,
+      //   user: null,
+      //   favorites: [],
+      //   success: 'Logout successful',
+      //   error: null
+      // };
 
     default:
       return state;

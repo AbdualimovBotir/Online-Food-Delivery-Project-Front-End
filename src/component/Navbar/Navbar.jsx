@@ -1,24 +1,38 @@
-import { Avatar, IconButton, Badge, Box } from '@mui/material'; // Badge va Box import qilindi
+import { Avatar, IconButton, Badge, Box } from '@mui/material';
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import './Navbar.css';
 import { Person } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-// import zIndex from '@mui/material/styles/zIndex';
+import { useSelector } from 'react-redux';
+import './Navbar.css';
 
 const Navbar = () => {
-    const navigate=useNavigate();
+    const auth = useSelector(state => state.auth);
+    const navigate = useNavigate();
+    const handleAvatarClick=()=>{
+        if(auth.user?.role==="ROLE_CUSTOMER"){
+            navigate("/my-profile")
+        }
+        else{
+            navigate("/admin/restaurant")
+        }
+    }
+    // Function to get the first letter of the user's full name
+    const getUserInitial = (fullName) => {
+        return fullName ? fullName.charAt(0).toUpperCase() : '?';
+    };
+
     return (
-        <Box  className="px-5  sticky top-0 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between items-center">
+        <Box className="px-5 sticky top-0 z-50 py-3 bg-[#e91e63] lg:px-20 flex justify-between items-center">
             {/* Logo */}
             <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
-                <h1 className="font-semibold text-gray-100 text-2xl">
+                <li onClick={()=>navigate("/")} className="font-semibold text-gray-100 text-2xl">
                     Fast Food
-                </h1>
+                </li>
             </div>
 
-            {/* Search, Avatar va Cart Badge */}
+            {/* Search, Avatar, and Cart Badge */}
             <div className="flex items-center space-x-6">
                 {/* Search */}
                 <div>
@@ -27,15 +41,17 @@ const Navbar = () => {
                     </IconButton>
                 </div>
 
-                {/* User Avatar */}
+                {/* User Avatar or Login Icon */}
                 <div>
-                   { false ?<Avatar sx={{ bgcolor: "white", color: "#e91e63" }}>
-                        B
-                    </Avatar>:
-                    <IconButton onClick={()=>navigate("/account/login")}>
-                        <Person/>
-                    </IconButton>    
-                }
+                    {auth.user ? (
+                        <Avatar onClick={handleAvatarClick} sx={{ bgcolor: "white", color: "#e91e63" }}>
+                            {getUserInitial(auth.user.fullName)}
+                        </Avatar>
+                    ) : (
+                        <IconButton onClick={() => navigate("/account/login")}>
+                            <Person sx={{ fontSize: "1.5rem", color: "white" }} />
+                        </IconButton>
+                    )}
                 </div>
 
                 {/* Shopping Cart Badge */}
