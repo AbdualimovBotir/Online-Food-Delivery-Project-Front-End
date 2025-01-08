@@ -94,30 +94,59 @@ export const getUser = (jwt) => async (dispatch) => {
 };
 
 // Add to Favorite Action
-export const addToFavorite = (jwt, restaurantId) => async (dispatch) => {
+// export const addToFavorite = (jwt, restaurantId) => async (dispatch) => {
+//   dispatch({ type: ADD_TO_FAVORITE_REQUEST });
+
+//   try {
+//     const { data } = await axios.post(
+//       `${API_URL}/user/favorites`,
+//       { restaurantId },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${jwt}`
+//         }
+//       }
+//     );
+
+//     dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: data });
+//     console.log("Added to favorites", data);
+//   } catch (error) {
+//     dispatch({
+//       type: ADD_TO_FAVORITE_FAILURE,
+//       payload: error.response?.data?.message || error.message || 'Failed to add to favorites'
+//     });
+//     console.log("Add to favorites error", error);
+//   }
+// };
+
+export const addToFavorite = ({ restaurantId, jwt }) => async (dispatch) => {
   dispatch({ type: ADD_TO_FAVORITE_REQUEST });
 
   try {
+    // URLni to'g'irlash
     const { data } = await axios.post(
-      `${API_URL}/user/favorites`,
-      { restaurantId },
+      `http://localhost:5454/api/restaurants/${restaurantId}/favourites`, // To'g'irlangan URL
+      {}, // Sizga kerak bo'lgan qo'shimcha ma'lumot bo'lsa, bu yerga qo'shishingiz mumkin
       {
         headers: {
-          Authorization: `Bearer ${jwt}`
-        }
+          Authorization: `Bearer ${jwt}`, // JWT tokenni headerda yuborish
+          'Content-Type': 'application/json', // JSON formatida yuborish
+        },
       }
     );
 
     dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: data });
-    console.log("Added to favorites", data);
+    console.log('Added to favorites:', data);
   } catch (error) {
     dispatch({
       type: ADD_TO_FAVORITE_FAILURE,
-      payload: error.response?.data?.message || error.message || 'Failed to add to favorites'
+      payload: error.response?.data?.message || error.message || 'Failed to add to favorites',
     });
-    console.log("Add to favorites error", error);
+    console.log('Add to favorites error:', error);
   }
 };
+
+
 
 // Logout Action
 export const logout = () => async (dispatch) => {

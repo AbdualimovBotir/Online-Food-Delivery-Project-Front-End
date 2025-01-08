@@ -1,24 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Card,
-  CardMedia,
-  CardContent,
   Typography,
   Grid,
-  Button,
-  Collapse,
-  Checkbox,
-  FormGroup,
   Divider,
   FormControl,
   RadioGroup,
   Radio,
-  FormControlLabel, // Bu faqat bitta marta bo'lishi kerak
+  FormControlLabel,
 } from "@mui/material";
 import MenuCard from "./MenuCard";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantById, getRestaurantsCategory } from "../State/Restaurant/Action";
+import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 
-// Kategoriyalar va taom turlari
-const categories = ["All Categories", "Pizza", "Biryani", "Burger", "Chicken", "Rice"];
 const foodTypes = [
   { label: "All", value: "all" },
   { label: "Vegetarian only", value: "vegetarian" },
@@ -26,76 +21,25 @@ const foodTypes = [
   { label: "Seasonal", value: "seasonal" },
 ];
 
-const menuItems = [
-  {
-    name: "Margherita Pizza",
-    image:
-      "https://cdn.pixabay.com/photo/2015/04/08/13/13/food-712665_1280.jpg",
-    category: "Pizza",
-    price: "$8.99",
-    type: "vegetarian",
-    description: "Classic Margherita pizza with fresh mozzarella, basil, and tomato sauce.",
-  },
-  {
-    name: "Chicken Biryani",
-    image:
-      "https://cdn.pixabay.com/photo/2014/10/19/20/59/hamburger-494706_1280.jpg",
-    category: "Biryani",
-    price: "$10.99",
-    type: "non_vegetarian",
-    description: "Spicy and flavorful chicken biryani with fragrant basmati rice.",
-  },
-  // boshqa menyu elementlarini qo'shishingiz mumkin...
-  {
-    name: "Chicken Biryani",
-    image:
-      "https://cdn.pixabay.com/photo/2014/10/19/20/59/hamburger-494706_1280.jpg",
-    category: "Biryani",
-    price: "$10.99",
-    type: "non_vegetarian",
-    description: "Spicy and flavorful chicken biryani with fragrant basmati rice.",
-  },
-  {
-    name: "Chicken Biryani",
-    image:
-      "https://cdn.pixabay.com/photo/2014/10/19/20/59/hamburger-494706_1280.jpg",
-    category: "Biryani",
-    price: "$10.99",
-    type: "non_vegetarian",
-    description: "Spicy and flavorful chicken biryani with fragrant basmati rice.",
-  },
-  {
-    name: "Chicken Biryani",
-    image:
-      "https://cdn.pixabay.com/photo/2014/10/19/20/59/hamburger-494706_1280.jpg",
-    category: "Biryani",
-    price: "$10.99",
-    type: "non_vegetarian",
-    description: "Spicy and flavorful chicken biryani with fragrant basmati rice.",
-  },
-  {
-    name: "Margherita Pizza",
-    image:
-      "https://cdn.pixabay.com/photo/2015/04/08/13/13/food-712665_1280.jpg",
-    category: "Pizza",
-    price: "$8.99",
-    type: "vegetarian",
-    description: "Classic Margherita pizza with fresh mozzarella, basil, and tomato sauce.",
-  },
-  {
-    name: "Margherita Pizza",
-    image:
-      "https://cdn.pixabay.com/photo/2015/04/08/13/13/food-712665_1280.jpg",
-    category: "Pizza",
-    price: "$8.99",
-    type: "vegetarian",
-    description: "Classic Margherita pizza with fresh mozzarella, basil, and tomato sauce.",
-  },
+const fastFoodCategories = [
+  { id: 1, name: "Burgers" },
+  { id: 2, name: "Fries" },
+  { id: 3, name: "Chicken" },
+  { id: 4, name: "Salads" },
+  { id: 5, name: "Desserts" },
+  { id: 6, name: "Beverages" },
 ];
 
 const RestaurantDetails = () => {
   const [selectedFoodType, setSelectedFoodType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { id } = useParams();
+
+  const restaurant = useSelector((state) => state.restaurant.restaurant);
+  console.log("Redux State Restaurant:", restaurant);
 
   const handleFilter = (event) => {
     const { name, value } = event.target;
@@ -106,7 +50,31 @@ const RestaurantDetails = () => {
     }
   };
 
-  // Filtrlangan menyu elementlari
+  useEffect(() => {
+    if (jwt && id) {
+      setIsLoading(true);
+      dispatch(getRestaurantById({ jwt, restaurantId: id }))
+        .then(() => {
+          dispatch(getRestaurantsCategory({ jwt, restaurantId: id }));
+          dispatch(getMenuItemsByRestaurantId({jwt,restaurantId:id,vegetarian:true,nonveg:false,seasional:true}))
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [jwt, id, dispatch]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!restaurant) {
+    return <div>Restaurant details are unavailable.</div>;
+  }
+
+  const categories = restaurant?.categories || fastFoodCategories;
+  const menuItems = restaurant?.menuItems || [];
+
   const filteredMenuItems = menuItems.filter((item) => {
     const matchesFoodType =
       selectedFoodType === "all" || item.type === selectedFoodType;
@@ -119,21 +87,33 @@ const RestaurantDetails = () => {
     <div className="px-5 lg:px-20">
       <section>
         <h3 className="text-gray-500 py-2 mt-10">
-          Home / Uzbekh / Uzbekian fast food / 3
+          Home / {restaurant?.city} / {restaurant?.name}
         </h3>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <img
-                className="w-full h-[40vh] object-cover"
-                src="https://media.istockphoto.com/id/1307190527/photo/happy-waiter-serving-food-to-group-of-friends-in-a-pub.jpg?b=1&s=612x612&w=0&k=20&c=6Hp8_alO9BBpQYYpblorjchmZwu6ZmKSRREyj9cv1Zc="
+                className="w-full h-[40vh] object-cover rounded-lg shadow-lg"
+                src={restaurant?.images?.[0]}
                 alt="Restaurant Banner"
               />
+            </Grid>
+            <Grid container spacing={2}>
+              {restaurant?.images?.slice(1, 3).map((image, index) => (
+                <Grid item xs={12} sm={6} lg={6} key={index}>
+                  <img
+                    className="w-full h-[40vh] object-cover rounded-lg shadow-lg"
+                    src={image}
+                    alt={`Restaurant ${index + 1}`}
+                  />
+                </Grid>
+              ))}
             </Grid>
           </Grid>
         </div>
         <div className="pt-3 pb-5">
-          <h1 className="text-4xl font-semibold">Uzbekh Fast Food</h1>
+          <h1 className="text-4xl font-semibold">{restaurant?.name}</h1>
+          <p>{restaurant?.description}</p>
         </div>
       </section>
       <Divider />
@@ -169,14 +149,18 @@ const RestaurantDetails = () => {
                 value={selectedCategory}
                 onChange={handleFilter}
               >
-                {categories.map((category) => (
-                  <FormControlLabel
-                    key={category}
-                    value={category}
-                    control={<Radio />}
-                    label={category}
-                  />
-                ))}
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <FormControlLabel
+                      key={category.id}
+                      value={category.name}
+                      control={<Radio />}
+                      label={category.name}
+                    />
+                  ))
+                ) : (
+                  <Typography>No categories available</Typography>
+                )}
               </RadioGroup>
             </FormControl>
           </div>

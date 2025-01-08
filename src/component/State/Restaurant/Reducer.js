@@ -1,5 +1,5 @@
+import { GET_USER_SUCCESS, UPDATE_USER_SUCCESS, DELETE_USER_SUCCESS } from "../Authentication/ActionType";
 import * as actionTypes from "./ActionType";
-
 
 const initialState = {
   restaurants: [],
@@ -10,8 +10,9 @@ const initialState = {
   events: [],
   restaurantsEvents: [],
   categories: [],
+  user: null,  // User state to handle the user details
+  favorites: [],  // Initialized favorites as an empty array
 };
-
 
 const restaurantReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -34,6 +35,29 @@ const restaurantReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case GET_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload,
+        favorites: action.payload.favorites,  // Store user favorites when the user is successfully fetched
+      };
+
+    case UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload,  // Update the user data with the payload
+      };
+
+    case DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: null,  // Clear user data when the user is deleted
+        favorites: [],  // Clear favorites if needed
+      };
+
     case actionTypes.GET_ALL_RESTAURANTS_SUCCESS:
       return {
         ...state,
@@ -41,12 +65,14 @@ const restaurantReducer = (state = initialState, action) => {
         restaurants: action.payload,
       };
 
-    case actionTypes.GET_RESTAURANT_BY_ID_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        restaurant: action.payload,
-      };
+      case actionTypes.GET_RESTAURANT_BY_ID_SUCCESS:
+        console.log("Payload:", action.payload); // Konsolda tekshirish
+        return {
+          ...state,
+          loading: false,
+          restaurant: action.payload,
+        };
+      
 
     case actionTypes.GET_RESTAURANT_BY_USER_ID_SUCCESS:
       return {
@@ -59,8 +85,8 @@ const restaurantReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        usersRestaurant:action.payload
-        // restaurants: [...state.restaurants, action.payload],
+        usersRestaurant: action.payload,
+        restaurants: [...state.restaurants, action.payload],  // Add new restaurant to the restaurants list
       };
 
     case actionTypes.UPDATE_RESTAURANT_SUCCESS:
@@ -76,12 +102,8 @@ const restaurantReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        restaurants: state.restaurants.filter(
-          (item) => item.id !== action.payload
-        ),
-        usersRestaurant:state.usersRestaurant.filter(
-          (item)=>item.id!==action.payload
-        ),
+        restaurants: state.restaurants.filter((item) => item.id !== action.payload),
+        usersRestaurant: state.usersRestaurant.filter((item) => item.id !== action.payload),
       };
 
     case actionTypes.UPDATE_RESTAURANT_STATUS_SUCCESS:
@@ -100,7 +122,7 @@ const restaurantReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         events: [...state.events, action.payload],
-        restaurantsEvents:[...state.restaurantsEvents,action.payload],
+        restaurantsEvents: [...state.restaurantsEvents, action.payload],
       };
 
     case actionTypes.GET_ALL_EVENTS_SUCCESS:

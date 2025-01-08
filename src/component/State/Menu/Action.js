@@ -27,8 +27,9 @@ export const getMenuItemsByRestaurantId = (reqData) => {
   return async (dispatch) => {
     dispatch({ type: actionTypes.GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST });
     try {
+      const foodCategoryParam = reqData.food_category ? `&food_category=${reqData.food_category}` : '';
       const { data } = await api.get(
-        `/api/food/restaurant/${reqData.restaurantId}?vegetarian=${reqData.vegetarian}&nonveg=${reqData.nonveg}&sessional=${reqData.seasional}&food_category=${reqData.food_category}`,
+        `/api/food/restaurant/${reqData.restaurantId}?vegetarian=${reqData.vegetarian}&nonveg=${reqData.nonveg}&seasonal=${reqData.seasonal}${foodCategoryParam}`,
         {
           headers: {
             Authorization: `Bearer ${reqData.jwt}`,
@@ -49,6 +50,7 @@ export const getMenuItemsByRestaurantId = (reqData) => {
     }
   };
 };
+
 
 export const searchMenuItem = ({ keyword, jwt }) => {
   return async (dispatch) => {

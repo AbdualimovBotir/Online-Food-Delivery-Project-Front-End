@@ -4,41 +4,19 @@ import MultiItemCorousel from './MultiItemCorousel';
 import RestaurantCart from '../Restaurant/RestaurantCart';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRestaurants } from '../State/Restaurant/Action';
-
-const restaurants = [
-  {
-    id: 1,
-    name: "Pizza Place",
-    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
-    description: "Delicious pizzas made with fresh ingredients."
-  },
-  {
-    id: 2,
-    name: "Burger World",
-    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
-    description: "Juicy burgers with a variety of toppings."
-  },
-  {
-    id: 3,
-    name: "Sushi Spot",
-    images: ["https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg", "https://static.tildacdn.com/tild3536-3830-4831-b865-633162643063/1672272124_kalix-clu.jpg"],
-    description: "Authentic sushi with fresh fish."
-  },
-];
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  // const { restaurant } = useSelector(store => store);
-  // const { restaurants, loading, error } = useSelector((state) => state.restaurant);
-  const restaurants = useSelector((state) => state.restaurant.restaurants);
+  const restaurants = useSelector((state) => state.restaurant.restaurants); // Fix: Directly access `restaurants`
 
-  console.log("restaurant", restaurants);
+  console.log("restaurants", restaurants);
 
   useEffect(() => {
     dispatch(getAllRestaurants(jwt));
   }, [dispatch, jwt]);
-
+  
   return (
     <div>
       {/* Banner Section */}
@@ -67,7 +45,7 @@ export const Home = () => {
           Order from our handpicked favourites
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {restaurants.map((item) => (
+          {Array.isArray(restaurants) && restaurants.map((item) => ( // Fix: Check if restaurants is an array
             <RestaurantCart
               item={item}
               key={item.id}

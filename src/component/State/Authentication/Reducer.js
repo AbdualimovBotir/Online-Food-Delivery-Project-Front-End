@@ -31,6 +31,12 @@ const authReducer = (state = initialState, action) => {
     case ADD_TO_FAVORITE_REQUEST:
       return { ...state, isLoading: true, error: null, success: null };
 
+    case GET_USER_SUCCESS:
+    return {
+      ...state,
+      favorites: action.payload.favorites, // API dan kelayotgan "favorites" massivini to'g'ri bog'lang
+    };
+    
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
       return { 
@@ -41,15 +47,17 @@ const authReducer = (state = initialState, action) => {
         error: null 
       };
 
-    case ADD_TO_FAVORITE_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        error: null,
-        favorites: state.favorites.some(item => item.id === action.payload.id)
-          ? state.favorites.filter(item => item.id !== action.payload.id)
-          : [action.payload, ...state.favorites]
-      };
+      case ADD_TO_FAVORITE_SUCCESS:
+        const isAlreadyFavorite = state.favorites.some(item => item.id === action.payload.id);
+        return {
+          ...state,
+          isLoading: false,
+          error: null,
+          favorites: isAlreadyFavorite
+            ? state.favorites.filter(item => item.id !== action.payload.id) // Agar mavjud bo'lsa, o'chirish
+            : [...state.favorites, action.payload] // Agar mavjud bo'lmasa, qo'shish
+        };
+      
 
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
